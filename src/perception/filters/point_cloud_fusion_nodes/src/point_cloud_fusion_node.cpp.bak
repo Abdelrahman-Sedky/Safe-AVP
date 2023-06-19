@@ -129,7 +129,7 @@ PointCloudFusionNode::pointcloud_callback(
   const PointCloudMsgT::ConstSharedPtr & msg7, const PointCloudMsgT::ConstSharedPtr & msg8)
 {
 <<<<<<< HEAD
-/* FHA (Operates at wrong time early - late)
+/* FHA (Operates at wrong time early - late) 
     
 		1) Give the callback a timestamp that specify when this callback is called.
 		2) Get the difference between the callback timestamp and the latest message timestamp.
