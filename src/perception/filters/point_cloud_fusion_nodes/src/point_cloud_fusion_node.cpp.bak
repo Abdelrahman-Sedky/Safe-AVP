@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -100,31 +100,6 @@ PointCloudFusionNode::pointcloud_callback(
   const PointCloudMsgT::ConstSharedPtr & msg5, const PointCloudMsgT::ConstSharedPtr & msg6,
   const PointCloudMsgT::ConstSharedPtr & msg7, const PointCloudMsgT::ConstSharedPtr & msg8)
 {
-/* FHA (Operates at wrong time early - late)
-    
-		1) Give the callback a timestamp that specify when this callback is called.
-		2) Get the difference between the callback timestamp and the latest message timestamp.
-		3) Compare this difference with a minimum and maximum values.
-
-		pseudocode:
-		#define MAX maximum_delay
-		callback_stamp = node->now();
-		difference = callback_stamp - latest_stamp
-		if(difference > MAX) { operates at wrong time late}
-end FHA */
-
-/* FHA (Receive error data)
-	--That's a simple code can use to check if the received data has a problem 
-  // Perform input data validation to detect and reject erroneous or malformed point cloud messages
-  for (const auto& msg : msgs) {
-    if (!validatePointCloud(msg)) {
-      RCLCPP_WARN(get_logger(), "Received an erroneous or malformed point cloud message. Ignoring...");
-      return;
-    }
-  }
-		
-end FHA */
-
   std::array<PointCloudMsgT::ConstSharedPtr, 8> msgs{msg1, msg2, msg3, msg4, msg5, msg6, msg7,
     msg8};
 
