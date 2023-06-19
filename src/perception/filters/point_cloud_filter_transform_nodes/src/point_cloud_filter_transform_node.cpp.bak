@@ -141,7 +141,6 @@ PointCloud2FilterTransformNode::PointCloud2FilterTransformNode(
       }
     }
   }
-  
   using autoware::common::types::PointXYZI;
   point_cloud_msg_wrapper::PointCloud2Modifier<PointXYZI>{
     m_filtered_transformed_msg, m_output_frame_id}.resize(m_pcl_size);
@@ -198,83 +197,10 @@ void
 PointCloud2FilterTransformNode::process_filtered_transformed_message(
   const PointCloud2::SharedPtr msg)
 {
-/* FHA (Operates at wrong time early - late)
-    
-		1) Give the callback a timestamp that specify when this callback is called.
-		2) Get the difference between the callback timestamp and the latest message timestamp.
-		3) Compare this difference with a minimum and maximum values.
-
-		pseudocode:
-		#define MAX maximum_delay
-		#define MIN minimum_delay
-		callback_stamp = node->now();
-		difference = callback_stamp - latest_stamp
-		if(difference > MAX) { operates at wrong time late}
-		if(difference < MIN) { operates at wrong time early}
-		
-end FHA */
-
-/* FHA (Recieve Error Data - Simple-Code)
-Note: some of this code is already handled 
-Steps:
-	1-The first check ensures that the LiDAR message is not empty. If it's empty, it prints a message indicating that the LiDAR data is empty and returns early
-	2-The number of points in the LiDAR message is printed by calculating the size of the data array divided by the size of a single point (16 bytes in this case)
-	3-The frame ID of the LiDAR message is printed to verify if it matches the expected frame ID.
-	4-A sample point is extracted from the LiDAR message by accessing the "x", "y", and "z" fields. The coordinates of the sample point are printed to verify that the data is being parsed correctly
-  // Check if the LiDAR message contains data
-  if (msg->data.empty())
-  {
-    std::cout << "LiDAR data is empty!" << std::endl;
-    return;
-  }
-
-  // Print the number of points in the LiDAR message
-  std::cout << "Number of points in the LiDAR message: " << (msg->data.size() / 16) << std::endl;
-
-  // Print the frame ID of the LiDAR message
-  std::cout << "LiDAR message frame ID: " << msg->header.frame_id << std::endl;
-
-  // Print a sample point from the LiDAR message
-  float32_t x = 0.0f, y = 0.0f, z = 0.0f;
-  sensor_msgs::PointCloud2ConstIterator<float32_t> x_it(*msg, "x");
-  sensor_msgs::PointCloud2ConstIterator<float32_t> y_it(*msg, "y");
-  sensor_msgs::PointCloud2ConstIterator<float32_t> z_it(*msg, "z");
-  if (x_it != x_it.end() && y_it != y_it.end() && z_it != z_it.end())
-  {
-    x = *x_it;
-    y = *y_it;
-    z = *z_it;
-  }
-  std::cout << "Sample point coordinates: x=" << x << ", y=" << y << ", z=" << z << std::endl;
-*/
   const auto filtered_transformed_msg = filter_and_transform(*msg);
   m_pub_ptr->publish(filtered_transformed_msg);
 }
 
-/*
-FHA (Sending error data - Pesudocode)
-	1-Check for the Data before publish it using (try-catch)
-	2-if there are any errors (Stop and publish an error message)
-	
-	void PointCloud2FilterTransformNode::process_filtered_transformed_message(
-	  const PointCloud2::SharedPtr msg)
-	{
-	  try {
-		const auto filtered_transformed_msg = filter_and_transform(*msg);
-		m_pub_ptr->publish(filtered_transformed_msg);
-	  } catch (const std::exception& e) {
-		// Handle the error
-		RCLCPP_ERROR(get_logger(), "Error processing point cloud: %s", e.what());
-	  
-		// Create and publish an error message
-		std::string error_message = "Error processing point cloud: " + std::string(e.what());
-		std_msgs::msg::String error_msg;
-		error_msg.data = error_message;
-		m_error_pub_ptr->publish(error_msg);
-	  }
-	}
-	
-*/
 }  // namespace point_cloud_filter_transform_nodes
 }  // namespace filters
 }  // namespace perception
