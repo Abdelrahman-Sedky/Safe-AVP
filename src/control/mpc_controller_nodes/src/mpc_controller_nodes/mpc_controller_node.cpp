@@ -13,20 +13,20 @@
 // limitations under the License.
 
 /*****************************************************************************************/
-/*	Failure Mode: (1)Fails to operate                                                    */
-/*	                                                                                     */
-/*	Hazard Type: Functional failure                                                      */
-/*	                                                                                     */
-/*	Issue Description: The MPC controller fails to initialize or execute its control     */
-/*	algorithm correctly, resulting in a complete failure to operate as intended.         */
-/*	                                                                                     */
-/*	How to Discover it: Monitor the controller's initialization process and execution    */
-/*	for any errors, exceptions, or unexpected termination.                               */
-/*	                                                                                     */
-/*	Mitigation Technique: Implement robust error handling and logging mechanisms         */
-/*	to identify and handle initialization or execution failures. Use appropriate         */
-/*	exception handling techniques and ensure proper error messages or notifications      */
-/*	are generated to alert system operators.                                             */
+/*	Failure Mode: (1)Fails to operate                                                 */
+/*	                                                                                  */
+/*	Hazard Type: Functional failure                                                   */
+/*	                                                                                  */
+/*	Issue Description: The MPC controller fails to initialize or execute its control  */
+/*	algorithm correctly, resulting in a complete failure to operate as intended.      */
+/*	                                                                                  */
+/*	How to Discover it: Monitor the controller's initialization process and execution */
+/*	for any errors, exceptions, or unexpected termination.                            */
+/*	                                                                                  */
+/*	Mitigation Technique: Implement robust error handling and logging mechanisms      */
+/*	to identify and handle initialization or execution failures. Use appropriate      */
+/*	exception handling techniques and ensure proper error messages or notifications   */
+/*	are generated to alert system operators.                                          */
 /*****************************************************************************************/	
 
 #include "mpc_controller_nodes/mpc_controller_node.hpp"
@@ -46,28 +46,28 @@ MpcControllerNode::MpcControllerNode(const std::string & name, const std::string
 : ControllerBaseNode{name, ns}
 {
 	
-/*****************************************************************************************/
+/********************************************************************************************/
 /*	Failure Mode: (2)Operates incorrectly/erroneously                                    */
 /*	                                                                                     */
 /*	Hazard Type: Functional failure                                                      */
 /*	                                                                                     */
-/*	Issue Description:  The MPC controller performs control actions     				 */
+/*	Issue Description:  The MPC controller performs control actions     		     */
 /*	that deviate from the desired behavior, leading to incorrect or erroneous operation. */
 /*	                                                                                     */
-/*	How to Discover it: Analyze the controller's output and compare it					 */
-/*  with the expected control actions or behavior.Monitor system behavior     			 */
-/*  and performance for any unexpected or undesired responses.                           */
+/*	How to Discover it: Analyze the controller's output and compare it	             */
+/*      with the expected control actions or behavior.Monitor system behavior                */
+/*      and performance for any unexpected or undesired responses.                           */
 /*	                                                                                     */
-/*	Mitigation Technique: Conduct rigorous testing and validation of the MPC			 */
-/*  controller's algorithms using simulated scenarios and real-world data. Implement	 */
-/*  model verification techniques, such as model checking or formal methods, 			 */
-/*  to ensure the correctness of the controller's operation.                             */           
+/*	Mitigation Technique: Conduct rigorous testing and validation of the MPC	     */
+/*  	controller's algorithms using simulated scenarios and real-world data. Implement     */
+/*  	model verification techniques, such as model checking or formal methods, 	     */
+/*  	to ensure the correctness of the controller's operation.                              */           
 /*****************************************************************************************/	
 
 
 /*****************************************************************************************/
-/*	Failure Mode: (3)Operates inadvertently    											 */
-/*												                             		     */
+/*	Failure Mode: (3)Operates inadvertently    					*/
+/*											*/
 /*  Hazard Type: Functional failure                                                      */
 /*                                                                                       */
 /*  Issue Description: The MPC controller operates unintentionally or unexpectedly,      */
@@ -85,13 +85,13 @@ MpcControllerNode::MpcControllerNode(const std::string & name, const std::string
 
 
 /******************************************************************************************/
-/*	Failure Mode: (4),(5)Operates at the wrong time (early or early)   				      */		 
+/*	Failure Mode: (4),(5)Operates at the wrong time (early or early)   	          */		 
 /*                                                                                        */
 /*  Hazard Type: Timing-related failure                                                   */
 /*                                                                                        */
 /*  Issue Description: The MPC controller starts its operation prematurely, initiating    */
-/*  control actions before the intended timing or event.								  */
-/*  The MPC controller starts its operation later than the intended						  */
+/*  control actions before the intended timing or event.				  */
+/*  The MPC controller starts its operation later than the intended			  */
 /*  timing or event, causing delays in control actions and system response.               */
 /*                                                                                        */
 /*  How to Discover it: Monitor the controller's activation triggers and timing           */
@@ -105,7 +105,7 @@ MpcControllerNode::MpcControllerNode(const std::string & name, const std::string
 /******************************************************************************************/
 
 /******************************************************************************************/
-/*	Failure Mode: (6)Unable to stop operation  					    	        		  */
+/*	Failure Mode: (6)Unable to stop operation  					  */
 /*                                                                                        */
 /*  Hazard Type: Control failure                                                          */
 /*                                                                                        */
@@ -232,7 +232,7 @@ MpcControllerNode::MpcControllerNode(const std::string & name, const std::string
 
 
 /*********************************************************************************************/
-/*	Failure Mode: (7)Receives erroneous data    						        		     */
+/*	Failure Mode: (7)Receives erroneous data    					     */
 /*                                                                                           */
 /*  Hazard Type: Data-related failure                                                        */
 /*                                                                                           */
@@ -250,7 +250,7 @@ MpcControllerNode::MpcControllerNode(const std::string & name, const std::string
 
 
 /*********************************************************************************************/
-/*	Failure Mode: (8)Sends erroneous data  					        	        		     */
+/*	Failure Mode: (8)Sends erroneous data  					             */
 /*                                                                                           */
 /*  Issue Description: The MPC controller transmits or communicates erroneous or invalid data*/
 /*  to external systems, potentially affecting their operation or decision-making processes. */
@@ -267,7 +267,7 @@ MpcControllerNode::MpcControllerNode(const std::string & name, const std::string
 
 
 /*********************************************************************************************/
-/*	Failure Mode: (9)Conflicting data or information					        	         */
+/*	Failure Mode: (9)Conflicting data or information				     */
 /*                                                                                           */
 /*  Hazard Type: Data-related failure                                                        */
 /*                                                                                           */
