@@ -47,24 +47,7 @@ namespace lanelet2_map_provider
 Lanelet2MapProviderNode::Lanelet2MapProviderNode(const rclcpp::NodeOptions & options)
 : Node("Lanelet2MapProvider", options)
 {
-	
-	/***************************************************************************************
-	/*  Hazard Category: (1)Fails to operate
-    /*  Hazard Type: No map file loaded
-    /*  Issue Description: The map file is not loaded in the code, preventing the map provider node from functioning properly.
-    /*  How to Discover it: During runtime, if the map provider node is unable to access the map file, it will not function as intended.
-    /*  Mitigation Technique: Ensure that the map file is accessible and loaded properly before running the map provider node.
-     ***************************************************************************************/
   const std::string map_filename = declare_parameter("map_osm_file").get<std::string>();
- 
-	/***************************************************************************************
-	/*	Hazard Category: (2)Operates incorrectly/erroneously
-	/*	Hazard Type: Incorrect map frame origin calculation
-	/*	Issue Description: The calculation for the map frame origin is incorrect, leading to errors in the map provider node's operation.
-	/*	How to Discover it: During runtime, the map provider node may produce incorrect or inaccurate results, indicating that the map frame origin calculation is incorrect.
-	/*	Mitigation Technique: Verify that the calculation for the map frame origin is correct and adjust as necessary.
-     ***************************************************************************************/
-  
   const float64_t origin_offset_lat = declare_parameter("origin_offset_lat", 0.0);
   const float64_t origin_offset_lon = declare_parameter("origin_offset_lon", 0.0);
   if (has_parameter("latitude") && has_parameter("longitude") && has_parameter("elevation")) {
@@ -88,14 +71,6 @@ Lanelet2MapProviderNode::Lanelet2MapProviderNode(const rclcpp::NodeOptions & opt
       &Lanelet2MapProviderNode::handle_request, this,
       std::placeholders::_1, std::placeholders::_2));
 }
-
-	/***************************************************************************************	
-	/*	Hazard Category: (6)Unable to stop operation
-	/*	Hazard Type: Map provider node cannot be stopped
-	/*	Issue Description: The map provider node may continue to run even when it should be stopped, potentially interfering with other nodes or processes running on the system.
-	/*	How to Discover it: The map provider node may fail to stop when instructed to do so, indicating that it cannot be stopped properly.
-	/*	Mitigation Technique: Ensure that the map provider node is designed to stop properly and can be terminated if necessary.
-	***************************************************************************************/
 
 geometry_msgs::msg::TransformStamped Lanelet2MapProviderNode::get_map_origin()
 {
@@ -129,43 +104,77 @@ geometry_msgs::msg::TransformStamped Lanelet2MapProviderNode::get_map_origin()
 
 // This function should extract requested correct submap from the fullmap
 // convert to binary format and then fill response
-
-	/***************************************************************************************	
-	/*	Hazard Category: (8)Sends erroneous data
-	/*	Hazard Type: Map provider node produces incorrect data
-	/*	Issue Description: The map provider node may produce incorrect or inaccurate data, leading to errors in other nodes or processes that rely on its output.
-	/*	How to Discover it: During runtime, if other nodes or processes produce unexpected or incorrect results, it may be due to erroneous data produced by the map provider node.
-	/*	Mitigation Technique: Verify that the map provider node is producing correct and accurate data and adjust as necessary.
-	 ***************************************************************************************/
-
 void Lanelet2MapProviderNode::handle_request(
   std::shared_ptr<autoware_auto_msgs::srv::HADMapService_Request> request,
   std::shared_ptr<autoware_auto_msgs::srv::HADMapService_Response> response)
 {
+	
+	/* FHA (Operates at wrong time early - late)
+    
+		1) Give the callback a timestamp that specify when this callback is called.
+		2) Get the difference between the callback timestamp and the latest message timestamp.
+		3) Compare this difference with a minimum and maximum values.
+
+		pseudocode:
+		#define MAX maximum_delay
+		#define MIN minimum_delay
+		callback_stamp = node->now();
+		difference = callback_stamp - latest_stamp
+		if(difference > MAX) { operates at wrong time late}
+		if(difference < MIN) { operates at wrong time early}
+		
+end FHA */
+	
+   /* FHA (Operates inadvertently)
+    
+	1)Add intended_execution_condition() represents a function that checks whether the conditions for processing the request are met. 
+	If the conditions are not satisfied, the function logs a message using RCLCPP_INFO and returns, effectively ignoring the request.
+	
+	2)filter_request(request) is a function that filters the incoming request based on additional criteria. 
+	This can involve checking request metadata or any other relevant factors. If the request fails to pass 
+	the filtering criteria, the function logs a message using RCLCPP_INFO and returns.
+	
+	
+	---------Here is a simple code to be implemented---------
+	
+     if (!intended_execution_condition()) {
+        RCLCPP_INFO(get_logger(), "Request received but conditions not met. Ignoring request.");
+        return;
+    }
+    
+     if (!filter_request(request)) {
+        RCLCPP_INFO(get_logger(), "Filtered request received. Ignoring request.");
+        return;
+    }
+    
+  end FHA */	
+	
+	
+	
+   /* FHA (Operates incorrectly/erroneously)
+    
+	1)add validate_request() function to validate and sanitize the input parameters. 
+	If the request is found to be invalid, an appropriate error message is set in the response, 
+	and the function returns early.
+	
+	---------Here is a simple code to be implemented---------
+	
+    // Validate and sanitize input parameters
+    if (!validate_request(request)) {
+      RCLCPP_INFO(get_logger(), "Invalid request received. Ignoring request.");
+      return;
+    }
+
+  end FHA */
+  	
   autoware_auto_msgs::msg::HADMapBin msg;
   msg.header.frame_id = "map";
 
   // TODO(simon) add map version and format information to message header
   // msg.format_version = format_version;
   // msg.map_version = map_version;
-  
-	/***************************************************************************************	
-	/*	Hazard Category: (7)Receives erroneous data
-	/*	Hazard Type: Invalid map file
-	/*	Issue Description: The map file may be invalid or contain errors, leading to erroneous data being received by the map provider node.
-	/*	How to Discover it: During runtime, if the map provider node receives invalid or unexpected data, it may be due to an invalid map file.
-	/*	Mitigation Technique: Verify that the map file is valid and contains no errors before running the map provider node.
-	***************************************************************************************/
 
   auto primitive_sequence = request->requested_primitives;
-
-	/***************************************************************************************	
-	/*	Hazard Category: (1)Fails to operate
-	/*	Hazard Type: No map file loaded
-	/*	Issue Description: The map file is not loaded in the code, preventing the map provider node from functioning properly.
-	/*	How to Discover it: During runtime, if the map provider node is unable to access the map file, it will not function as intended.
-	/*	Mitigation Technique: Ensure that the map file is accessible and loaded properly before running the map provider node.
-	***************************************************************************************/	
 
   // special case where we send existing map as is
   if (primitive_sequence.size() == 1 && *(primitive_sequence.begin()) ==
@@ -175,14 +184,6 @@ void Lanelet2MapProviderNode::handle_request(
     response->map = msg;
     return;
   }
-
-	/***************************************************************************************	
-	/*	Hazard Category: (9)Conflicting data or information
-	/*	Hazard Type: Map file conflicts with other data sources
-	/*	Issue Description: The map file used by the map provider node may conflict with other data sources, leading to inconsistent or incorrect data being produced.
-	/*	How to Discover it: During runtime, if the map provider node produces inconsistent or incorrect data, it may be due to conflicts with other data sources.
-	/*	Mitigation Technique: Verify that the map file is consistent with other data sources and adjust as necessary.
-	 ***************************************************************************************/
 
   // check if geom bounds are set in request (ie - they are non zero)
   auto upper_bound = request->geom_upper_bound;
@@ -244,6 +245,22 @@ void Lanelet2MapProviderNode::handle_request(
     requested_map->add(*i);
   }
   autoware::common::had_map_utils::toBinaryMsg(requested_map, msg);
+  
+   /* FHA (Operates incorrectly/erroneously)  
+  
+    Before sending any data, validate it to ensure its correctness.
+	
+	---------Here is a simple code to be implemented---------
+	
+      // Validate data before sending
+       if (!validate_data(msg)) {
+           log_error("Invalid data. Sending aborted.");
+           return;
+       }
+  
+  end FHA */	
+  
+  
   response->map = msg;
 }
 
