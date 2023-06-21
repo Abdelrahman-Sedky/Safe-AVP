@@ -261,6 +261,12 @@ FHA (Sending error data - Pesudocode)
 	{
 	  try {
 		const auto filtered_transformed_msg = filter_and_transform(*msg);
+		////////////////////////////////////////////////////////////////
+		/*FSR : The AVP SW shall control transmitted safety relevant information for authentication,
+ identification, error correcting, and manipulation.Transmitted data shall be encrypted.
+		// Encrypt the point cloud message.
+     encrypt_point_cloud(filtered_transformed_msg);
+	   ////////////////////////////////////////////////////////////////
 		m_pub_ptr->publish(filtered_transformed_msg);
 	  } catch (const std::exception& e) {
 		// Handle the error
@@ -270,11 +276,48 @@ FHA (Sending error data - Pesudocode)
 		std::string error_message = "Error processing point cloud: " + std::string(e.what());
 		std_msgs::msg::String error_msg;
 		error_msg.data = error_message;
+		  
+
 		m_error_pub_ptr->publish(error_msg);
 	  }
 	}
 	
 */
+/*FSR : The AVP SW shall control transmitted safety relevant information for authentication,
+ identification, error correcting, and manipulation.Transmitted data shall be encrypted.
+       
+	    //This function takes in the filtered point cloud message and encrypts it using a secure encryption algorithm. The encryption function is implemented as follows:
+
+void PointCloud2FilterTransformNode::encrypt_point_cloud(PointCloud2 &msg)
+{
+  // Get the encryption key from a secure location.
+  std::string encryption_key;
+  // Encrypt the point cloud message.
+  // Perform encryption using a secure encryption algorithm, e.g., AES.
+  msg.data = encrypt(msg.data, encryption_key);
+}
+//This function takes in the encrypted point cloud message and verifies the identity of the sender. The authentication function is implemented as follows: 
+         
+bool PointCloud2FilterTransformNode::authenticate_point_cloud(PointCloud2 &msg)
+{
+  // Get the sender's public key from a secure location.
+  std::string sender_public_key;
+  // Verify the signature on the point cloud message.
+  return verify_signature(msg.data, sender_public_key);
+}
+
+
+//This function takes in the encrypted point cloud message and verifies that the message has not been tampered with. The integrity check function is implemented as follows:
+bool PointCloud2FilterTransformNode::verify_integrity_of_point_cloud(PointCloud2 &msg)
+{
+  // Get the message's hash from the message header.
+  std::string message_hash;
+  // Verify that the message's hash matches the hash of the decrypted message.
+  return message_hash == hash(msg.data);
+}
+
+  */
+}
 }  // namespace point_cloud_filter_transform_nodes
 }  // namespace filters
 }  // namespace perception
