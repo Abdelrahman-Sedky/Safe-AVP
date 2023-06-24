@@ -273,30 +273,7 @@ void ControllerBaseNode::on_bad_compute(std::exception_ptr eptr)  // NOLINT
     RCLCPP_WARN(get_logger(), e.what());
   }
 }
-  /* FSR3.3.3 : The AVP SW shall prevent unintended braking.
 
-   bool ControllerBaseNode::update()
-   {
-	   /*the value of command.braking can be either true or false. 
-   If command.braking is true, it means that the vehicle should brake.
-   If command.braking is false, it means that the vehicle should not brake.
-       
-   if (command.braking) {
-  // Check if the braking command is intended.
-  if (!is_braking_intended()) {
-    // Check if the vehicle is in a safe location.
-    if (!is_vehicle_in_safe_location()) {
-      // The vehicle is not in a safe location, so do not cancel the braking command.
-      return;
-    }
-
-    // The vehicle is in a safe location, so cancel the braking command.
-    command.braking = false;
-  }
- }
-
-  */
-  
 }  // namespace controller_common_nodes
 }  // namespace control
 }  // namespace motion
