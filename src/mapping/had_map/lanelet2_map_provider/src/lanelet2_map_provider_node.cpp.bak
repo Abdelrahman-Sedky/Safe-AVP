@@ -246,7 +246,7 @@ end FHA */
   }
   autoware::common::had_map_utils::toBinaryMsg(requested_map, msg);
   
-   /* FHA (Sends Erroneous Data)  
+   /* FHA (Operates incorrectly/erroneously)  
   
     Before sending any data, validate it to ensure its correctness.
 	

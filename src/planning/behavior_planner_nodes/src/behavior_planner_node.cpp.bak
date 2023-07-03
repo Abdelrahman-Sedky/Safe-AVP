@@ -166,33 +166,7 @@ void BehaviorPlannerNode::feedback_callback(
   (void) goal_handle;
   (void) feedback;
 }
-/* 
-   FSR 1 : The AVP SW shall detect if the automated vehicle’s position is located within the handover zone.
-   bool is_in_handover_zone(const double* vehicle_position, const double* handover_zone) {
-  
-    Returns True if the vehicle is located within the handover zone, False otherwise.
-    Args:
-      vehicle_position: The current position of the vehicle.
-      handover_zone: The handover zone.
-    Returns:
-      A boolean value indicating whether or not the vehicle is located within the handover zone.
-  
 
-  // Calculate the distance between the vehicle and the handover zone.
-  double distance = sqrt(pow(vehicle_position[0] - handover_zone[0], 2) + pow(vehicle_position[1] - handover_zone[1], 2));
-
-  // If the distance is less than a threshold, then the vehicle is considered to be located within the handover zone.
-  const double threshold = 1.0;
-  if (distance < threshold) {
-    return true;
-  } else {
-    return false;
-  }
-}  
-  */
-
-
-  
 void BehaviorPlannerNode::result_callback(const PlanTrajectoryGoalHandle::WrappedResult & result)
 {
   if (result.result->result == PlanTrajectoryAction::Result::SUCCESS &&
